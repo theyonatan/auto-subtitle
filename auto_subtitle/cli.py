@@ -42,8 +42,8 @@ def main():
             f"{model_name} is an English-only model, forcing English detection.")
         args["language"] = "en"
     # if translate task used and language argument is set, then use it
-    elif language != "auto":
-        args["language"] = language
+    if args["task"] == "translate":
+        args.pop("language", None)
         
     model = whisper.load_model(model_name)
     audios = get_audio(args.pop("video"))
@@ -68,8 +68,14 @@ def get_audio(paths):
 
         ffmpeg.input(path).output(
             output_path,
-            acodec="pcm_s16le", ac=1, ar="16k"
+            format="wav",
+            acodec="pcm_s16le",
+            ac=1,
+            ar=16000,
+            map_metadata=0,
+            copyts=None
         ).run(quiet=True, overwrite_output=True)
+
 
         audio_paths[path] = output_path
 
