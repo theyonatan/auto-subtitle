@@ -91,7 +91,7 @@ def get_subtitles(audio_paths: list, output_srt: bool, output_dir: str, transcri
         result = transcribe(audio_path)
         warnings.filterwarnings("default")
 
-        with open(srt_path, "w", encoding="utf-8") as srt:
+        with open(srt_path, "w", encoding="utf-8-sig") as srt:
             write_srt(result["segments"], file=srt)
 
         subtitles_path[path] = srt_path
