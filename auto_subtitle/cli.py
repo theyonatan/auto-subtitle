@@ -54,19 +54,7 @@ def main():
     if srt_only:
         return
 
-    for path, srt_path in subtitles.items():
-        out_path = os.path.join(output_dir, f"{filename(path)}.mp4")
-
-        print(f"Adding subtitles to {filename(path)}...")
-
-        video = ffmpeg.input(path)
-        audio = video.audio
-
-        ffmpeg.concat(
-            video.filter('subtitles', srt_path, force_style="OutlineColour=&H40000000,BorderStyle=3"), audio, v=1, a=1
-        ).output(out_path).run(quiet=True, overwrite_output=True)
-
-        print(f"Saved subtitled video to {os.path.abspath(out_path)}.")
+    print("SRT generation complete. No subtitles were burned into the video.")
 
 
 def get_audio(paths):
