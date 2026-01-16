@@ -31,30 +31,23 @@ def format_timestamp(seconds: float, always_include_hours: bool = False):
 
 
 def write_srt(transcript: Iterator[dict], file: TextIO):
-    MAX_DURATION = 5.0   # optional: cap very long subs
-    MIN_DISPLAY = 0.6    # minimum readable duration
 
-    segments = list(transcript)
-
-    for i, segment in enumerate(segments, start=1):
-        start = segment["start"]
-        end = segment["end"]
-
-        # Cap overly long subtitles
-        if end - start > MAX_DURATION:
-            end = start + MAX_DURATION
-
-        # Ensure minimum on-screen time
-        if end - start < MIN_DISPLAY:
-            end = start + MIN_DISPLAY
+    for i, segment in enumerate(transcript, start=1):
 
         print(
+
             f"{i}\n"
-            f"{format_timestamp(start, always_include_hours=True)} --> "
-            f"{format_timestamp(end, always_include_hours=True)}\n"
+
+            f"{format_timestamp(segment['start'], always_include_hours=True)} --> "
+
+            f"{format_timestamp(segment['end'], always_include_hours=True)}\n"
+
             f"{segment['text'].strip().replace('-->', '->')}\n",
+
             file=file,
+
             flush=True,
+
         )
 
 
