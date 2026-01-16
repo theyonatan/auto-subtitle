@@ -31,19 +31,22 @@ def format_timestamp(seconds: float, always_include_hours: bool = False):
 
 
 def write_srt(transcript: Iterator[dict], file: TextIO):
-    MIN_GAP = 0.15        # 150ms gap between subtitles
-    MAX_DURATION = 4.5   # max time a subtitle stays on screen
+    MAX_DURATION = 5.0   # optional: cap very long subs
+    MIN_DISPLAY = 0.6    # minimum readable duration
 
-    for i, segment in enumerate(transcript, start=1):
+    segments = list(transcript)
+
+    for i, segment in enumerate(segments, start=1):
         start = segment["start"]
         end = segment["end"]
 
-        # Cap subtitle duration
+        # Cap overly long subtitles
         if end - start > MAX_DURATION:
             end = start + MAX_DURATION
 
-        # Add a small gap before next subtitle
-        end = max(start, end - MIN_GAP)
+        # Ensure minimum on-screen time
+        if end - start < MIN_DISPLAY:
+            end = start + MIN_DISPLAY
 
         print(
             f"{i}\n"
@@ -53,6 +56,7 @@ def write_srt(transcript: Iterator[dict], file: TextIO):
             file=file,
             flush=True,
         )
+
 
 
 
